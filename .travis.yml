@@ -1,0 +1,35 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t arendkolk/reactapp-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run arendkolk/reactapp-test npm test -- --coverage
+
+after_success:
+  - docker build -t arendkolk/reactapp-client ./client
+  - docker build -t arendkolk/reactapp-nginx ./nginx
+  - docker build -t arendkolk/reactapp-server ./server
+  - docker build -t arendkolk/reactapp-worker ./worker
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push them to Docke hub
+  - docker push arendkolk/reactapp-client
+  - docker push arendkolk/reactapp-nginx
+  - docker push arendkolk/reactapp-server
+  - docker push arendkolk/reactapp-worker
+
+deploy:
+  provider: elasticbeanstalk
+  region: eu-central-1
+  app: reactapp
+  env: Reactapp-env
+  bucket_name: elasticbeanstalk-eu-central-1-346932333006
+  bucket_path: reactapp
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: $AWS_SECRET_KEY
