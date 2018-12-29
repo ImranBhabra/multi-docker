@@ -6,21 +6,21 @@ services:
 
 
 before_install:
-  - docker build -t imranafzal/react-test -f ./client/Dockerfile.dev ./
+  - docker build -t bhabra/multi-docker -f ./client/Dockerfile.dev ./
 script:
 
-  - docker run imranafzal/react-test npm test -- --coverage
+  - docker run bhabra/multi-docker npm test -- --coverage
 
 
 after_success:
 
-  - docker build -t imranafzal/multi-client ./client
+  - docker build -t bhabra/multi-client ./client
 
-  - docker build -t imranafzal/multi-nginx ./nginx
+  - docker build -t bhabra/multi-nginx ./nginx
 
-  - docker build -t imranafzal/multi-server ./server
+  - docker build -t bhabra/multi-server ./server
 
-  - docker build -t imranafzal/multi-worker ./worker
+  - docker build -t bhabra/multi-worker ./worker
   
 # Log in to the docker CLI
 
@@ -28,11 +28,11 @@ after_success:
  
 # Take those images and push them to Docke hub
 
-  - docker push imranafzal/multi-client
+  - docker push bhabra/multi-client
 
-  - docker push imranafzal/multi-nginx
+  - docker push bhabra/multi-nginx
 
-  - docker push imranafzal/multi-server
+  - docker push bhabra/multi-server
 
-  - docker push imranafzal/multi-worker
+  - docker push bhabra/multi-worker
 
