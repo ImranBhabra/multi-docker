@@ -7,6 +7,7 @@ services:
 
 
 before_install:
+
   - docker build -t bhabra/multi-docker -f ./client/Dockerfile.dev ./
 script:
 
